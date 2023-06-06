@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
+
+{% block title %} Hotel {% endblock %}
+
+
+{% block container %}
+
+    {% if messages %}
+        {% for i in messages %}
+            <div class="alert {{i.tags}}">{{i}}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        {% for i in hotel %}
+        <div class="col-md cont">
+            <div class="card_imovel">
+                <img class="img_capa_imovel" src="{{i.imagem.url}}">
+                <div class="informacoes_imoveis">
+                    <a class="a_none" href="{% url 'hotel' i.id %}">
+                        <h4 class="nome">{{i.nome}}</h4>
+                    </a>
+                    <p>R$ {{i.preco}}, Estrela: {{i.estrelas}}</p>
+                    <p>{{i.endereco}}, {{i.cidade}}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="GET">
+                        <label>Preço mínimo</label>
+                        <br>
+                        <input name="preco_minimo" class="form-control" type="number" placeholder="R$ 00">
+                        <br>
+                        <label>Preço máximo</label>
+                        <br>
+                        <input name="preco_maximo" class="form-control" type="number" placeholder="R$ 200000000">
+                        <br>
+                        <label>Quarto</label>
+                        <br>
+                        <select name="quarto" class="form-control">
+                            {% for i in quartos %}
+                                <option value="{{i.id}}">{{i.quartos}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <label>Estrelas</label>
+                        <select name="estrela" class="form-control">
+                            {% for i in estrelas %}
+                                <option value="{{i.id}}">{{i.estrelas}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <label>Cidade</label>
+                        <select name="cidade" class="form-control"> 
+                            {% for i in cidades %}
+                                <option value="{{i.id}}">{{i.cidades}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <input class="btn_filtrar_modal btn btn-primary" type="submit" value="FILTRAR">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'cadastrar_hotel' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label>Nome</label>
+                        <br>
+                        <input name="nome" class="form-control" type="text" placeholder="Nome do hotel">
+                        <br>
+                        <label>Imagem</label>
+                        <br>
+                        <input type="file" name="imagem" class="form-control">
+                        <br>
+                        <label>Preço</label>
+                        <br>
+                        <input name="preco" class="form-control" type="number" placeholder="Nome do hotel">
+                        <br>
+                        <label>Endereço</label>
+                        <br>
+                        <input name="endereco" class="form-control" type="text" placeholder="endereco">
+                        <br>
+                        <label>Estrelas</label>
+                        <select name="estrela" class="form-control">
+                            {% for i in estrelas %}
+                                <option value="{{i.id}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <label>Cidade</label>
+                        <select name="cidade" class="form-control"> 
+                            {% for i in cidades %}
+                                <option value="{{i.id}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <label>Celular </label>
+                        <input type="number" name="celular" class="form-control" placeholder="ex: 0000000000">
+                        <br>
+                        <label>Tipo de quarto</label>
+                        <br>
+                        <select name="tipo" class="form-control">
+                            {% for i in quartos %}
+                                <option value="{{i.id}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <br>
+                        <input class="btn_filtrar_modal btn btn-primary" type="submit" value="Cadastrar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

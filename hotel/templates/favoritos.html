@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block container %}
+<br>
+<br>
+<div class="container">
+    <table class="table table-striped">
+        {% if messages %}
+            {% for i in messages %}
+                <div class="alert {{i.tags}}">{{i}}</div>
+            {% endfor %}
+        {% endif %}
+        <h1 class="text-center">Hoteis que você salvou</h1>
+        <thead>
+            <tr>
+                <th>Hotel</th>
+                <th>Preco</th>
+                <th>Estrelas</th>
+                <th>Cidade</th>
+                <th>Endereço</th>
+                <th>Acessar</th>
+                <th>Excluir</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in favotiros_hotel %}
+                <tr>
+                    <td><h4>{{i.hotel_favorito.nome}}</h4></td>
+                    <td>{{i.hotel_favorito.preco}}</td>
+                    <td>{{i.hotel_favorito.estrelas}}</td>
+                    <td>{{i.hotel_favorito.cidade}}</td>
+                    <td>{{i.hotel_favorito.endereco}}</td>
+                    <td><a class="btn btn-info" href="{% url 'hotel' i.hotel_favorito.id %}">Acessar</a></td>
+                    <td><a class="btn btn-primary" href="{% url 'hotel_favoritos' i.hotel_favorito.id %}">Desfavoritar</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{%endblock%}

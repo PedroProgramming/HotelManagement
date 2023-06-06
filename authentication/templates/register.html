@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script>$(document).ready(function() {
+
+        function clear_form_zip_code(){
+            $('#address').val("");
+            $('#state').val("");
+            $('#city').val("");
+            $('#neighborhood').val("");
+        }
+
+        $('#zip_code').blur(function(){
+            var zip_code = $(this).val().replace(/\D/g, '');
+
+            if(zip_code != ""){
+                var validate_zip_code = /^[0-9]{8}$/;
+
+                if(validate_zip_code.test(zip_code)){
+                    $('#address').val("...");
+                    $('#state').val("...");
+                    $('#city').val("...");
+                    $('#neighborhood').val("...");
+
+                    $.getJSON("https://viacep.com.br/ws/"+ zip_code +"/json/?callback=?", function(dados) {
+
+                        if(!("erro" in dados)){
+                            $('#address').val(dados.logradouro);
+                            $('#state').val(dados.uf);
+                            $('#city').val(dados.localidade);
+                            $('#neighborhood').val(dados.bairro);
+                        } else {
+                            clear_form_zip_code();
+                            alert("Cep não encontrado.");
+                        }
+
+                    });
+
+                } else {
+                    clear_form_zip_code();
+                    alert("Formato de CEP inválido.");
+                }
+            } else{
+                clear_form_zip_code();
+            }
+        });
+
+    });
+</script>
+{% endblock %}
+
+{% block title %} Register {% endblock %}
+
+{% block container %}
+<div class="row">
+
+    <div class="col-md-1">
+
+    </div>
+
+    <div class="col-md">
+        <h1 class="mt-5 text-center">Register</h1>
+
+        {% if messages %}
+            {% for i in messages %}
+                <div class="alert {{i.tags}}">{{i}}</div>
+            {% endfor %}
+        {% endif %}
+        <br>
+        <form action="{% url 'register' %}" method="POST" class="d-flex">
+            {% csrf_token %}
+            <div style="margin-right: 10%; width: 50%;">
+                <h3 >Account registration</h3>
+                <label>Name:</label>
+                <input class="form-control" type="text" name="username" placeholder="Your name...">
+                <label>Surname:</label>
+                <input class="form-control" type="text" name="surname" placeholder="Your surname...">
+                <label>E-mail:</label>
+                <input class="form-control" type="email" name="email" placeholder="Your e-mail...">
+                <label>Password:</label>
+                <input class="form-control" type="password" name="password" placeholder="Your password...">
+                <label>Confirm password:</label>
+                <input class="form-control" type="password" name="confirm_password" placeholder="Confirm password...">
+            </div>
+
+            <div style="width: 50%;">
+                <h3>Personal data</h3>
+                <label>Zip code:</label>
+                <input class="form-control" type="number" name="zip_code" id="zip_code" placeholder="Your zip code...">
+                <p>Attention! After placing the zip code, the fields (Address, State, City and Neighborhood) will be filled in automatically.</p>
+                <label>Address:</label>
+                <input class="form-control" type="text" name="address" id="address" placeholder="Your address..." >
+                <label>State</label>
+                <input class="form-control" type="text" name="state" id="state" placeholder="Your state..." >
+                <label>City:</label>
+                <input class="form-control" type="text" name="city" id="city" placeholder="Your city..." >
+                <label>Neighborhood:</label>
+                <input class="form-control" type="text" name="neighborhood" id="neighborhood" placeholder="Your neighborhood..." >
+                <label>Cell phone</label>
+                <input class="form-control" type="number" name="cell_phone" placeholder="Your cell phone...">
+                <label>Telephone (Optional):</label>
+                <input class="form-control" type="number" name="telephone" placeholder="Your telephone...">
+                <label>Recovery e-mail:</label>
+                <input class="form-control" type="email" name="recovery_email" placeholder="Your e-mail...">
+                <input class="btn btn-success mt-5 col-3" type="submit" value="Register">
+                <a class="btn btn-info mt-5 col-3" href="{% url 'login' %}">Login</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-1">
+        
+    </div>
+</div>
+
+{% endblock %}

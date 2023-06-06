@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
+
+{% block title %} Hotel: {{hotel_view.nome}} {% endblock %}
+
+
+{% block container %}
+
+    {% if messages %}
+        {% for i in messages %}
+            <div class="alert {{i.tags}}">{{i}}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md">
+            <h1 class="text-center mt-4">Hotel: {{hotel_view.nome}}</h1>
+
+            <fieldset>
+                <img width="100%" height="400px" src="{{hotel_view.imagem.url}}">
+                <section class="d-flex ">
+                    <div style="margin-right: 5%;">
+                        <label>Preço</label>
+                        <p>R${{hotel_view.preco}}</p>
+                        <label>Endereço</label>
+                        <p>{{hotel_view.endereco}}</p>
+                        <label>Estrelas</label>
+                        <p>{{hotel_view.estrelas}}</p>
+                    </div>
+                    <div style="margin-right: 15%;">
+                        <label>Cidade</label>
+                        <p>{{hotel_view.cidade}}</p>
+                        <label>Número</label>
+                        <p>{{hotel_view.numero}}</p>
+                        <label>Quarto</label>
+                        <p>{{hotel_view.tipo_quarto_hotel}}</p>
+                    </div>
+                    <div>
+                        {% if hotel_favorito %}
+                            <a href="{% url 'hotel_favoritos' hotel_view.id %}"><img src="{% static 'home/img/coracao_marcado.png.png' %}"></a>
+                        {% else %}
+                            <a href="{% url 'hotel_favoritos' hotel_view.id %}"><img src="{% static 'home/img/coracao.png' %}"></a>
+                        {% endif %}    
+                    </div>
+                </section>
+            </fieldset>
+            <button type="button" class="btn btn-info" data-bs-toggle="modal"data-bs-target="#exampleModal2">
+                Agendar visita
+            </button>
+
+            <div class="row">
+                {% for i in segestao_hotel %}
+                <div class="col-md cont">
+                    <div class="card_imovel">
+                        <img class="img_capa_imovel" src="{{i.imagem.url}}">
+                        <div class="informacoes_imoveis">
+                            <a class="a_none" href="{% url 'hotel' i.id %}">
+                                <h4 class="nome">{{i.nome}}</h4>
+                            </a>
+                            <p>R$ {{i.preco}}, Estrela: {{i.estrelas}}</p>
+                            <p>{{i.endereco}}, {{i.cidade}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+
+    </div>
+    
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'visitas' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="hotel" value="{{hotel_view.id}}">
+                        <label>Dias</label>
+                        <br>
+                        <select name="dias" class="form-control">
+                            {% for i in dias %}
+                                <option value="{{i.id}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <label>Horarios</label>
+                        <select name="horarios" class="form-control">
+                            {% for i in horarios %}
+                                <option value="{{i.id}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <input type="submit" class="btn btn-info" value="Agendar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

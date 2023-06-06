@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block container %}
+<br>
+<br>
+<div class="container">
+    <table class="table table-striped">
+        {% if messages %}
+            {% for i in messages %}
+                <div class="alert {{i.tags}}">{{i}}</div>
+            {% endfor %}
+        {% endif %}
+        <thead>
+            <tr>
+                <th>Hotel</th>
+                <th>Usuario</th>
+                <th>Dia</th>
+                <th>Horario</th>
+                <th>Status</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in reservas %}
+                <tr>
+                    <td>{{i.hotel}}</td>
+                    <td>{{i.user.username}}</td>
+                    <td>{{i.dias}}</td>
+                    <td>{{i.horarios}}</td>
+                    <td>{% if i.status == 'A' %}
+                            Agendado
+                        {% else %}
+                            Cancelado
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if i.status == 'A' %}
+                            <a class="btn btn-danger" href="{% url 'cancelar_visita' i.id %}">Cancelar</a>
+                        {% elif i.status == 'Ca' %}
+                            <a class="btn btn-warning">Cancelando</a>
+                        {% else %}
+                            <a class="btn btn-success disabled">Cancelado</a>
+                            <a class="btn btn-danger" href="{% url 'excluir_visita' i.id %}">Excluir</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{%endblock%}
